@@ -7,7 +7,6 @@ Show the model creation progress and display the first created model.
 
 import RealityKit
 import SwiftUI
-
 import os
 
 private let logger = Logger(subsystem: ObjectCaptureReconstructionApp.subsystem,

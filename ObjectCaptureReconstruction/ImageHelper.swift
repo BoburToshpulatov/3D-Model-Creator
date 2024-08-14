@@ -8,7 +8,6 @@ Helper class for getting image's metadata.
 import Foundation
 import RealityKit
 import Synchronization
-
 import os
 
 private let logger = Logger(subsystem: ObjectCaptureReconstructionApp.subsystem,
@@ -37,7 +36,7 @@ class ImageHelper {
     }
 
     // Returns the aggregated metadata availability for the list of image URLs.
-    static func getMetadataAvailability(for urls: [URL]) async -> MetadataAvailability {
+    static func loadMetadataAvailability(from urls: [URL]) async -> MetadataAvailability {
         guard !urls.isEmpty else { return MetadataAvailability() }
 
         // Create a subtask for each URL to read its metadata.
@@ -50,7 +49,7 @@ class ImageHelper {
             for _ in 0..<maxNumOfConcurrentTasks {
                 let url = urls[currentURLIndex.load(ordering: .relaxed)]
                 currentURLIndex.add(1, ordering: .relaxed)
-                group.addTask { return await Self.getMetadataAvailability(from: url) }
+                group.addTask { return await Self.loadMetadataAvailability(from: url) }
             }
 
             // The minimum number of images with gravity and depth required to get a model with an accurate orientation and scale.
@@ -85,7 +84,7 @@ class ImageHelper {
                 let index = currentURLIndex.load(ordering: .relaxed)
                 if !Task.isCancelled && !Self.allFieldsAvailable(in: metadataAvailability) && index < urls.count {
                     group.addTask {
-                        let metadataAvailability = await Self.getMetadataAvailability(from: urls[index])
+                        let metadataAvailability = await Self.loadMetadataAvailability(from: urls[index])
                         currentURLIndex.add(1, ordering: .relaxed)
                         return metadataAvailability
                     }
@@ -95,17 +94,17 @@ class ImageHelper {
         }
     }
 
-    static private func getMetadataAvailability(from url: URL) async -> MetadataAvailability? {
+    static private func loadMetadataAvailability(from url: URL) async -> MetadataAvailability? {
         guard let sample = try? await PhotogrammetrySample(contentsOf: url) else { return nil }
-        
+
         var metadataAvailability = MetadataAvailability()
-        
+
         if sample.depthDataMap != nil { metadataAvailability.depth = true }
-        
+
         if sample.gravity != nil { metadataAvailability.gravity = true }
-        
+
         if sample.boundingBox != nil { metadataAvailability.boundingBox = true }
-        
+
         return metadataAvailability
     }
 

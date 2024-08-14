@@ -17,13 +17,14 @@ struct ContentView: View {
             case .ready:
                 SettingsView()
                     .padding()
-                
+
                 Spacer()
-                
+
             case .reconstructing, .viewing:
                 ProcessingView()
  
             case .error:
+                // In the error state, an alert gets displayed through the alert modifier on this view.
                 EmptyView()
             }
         }

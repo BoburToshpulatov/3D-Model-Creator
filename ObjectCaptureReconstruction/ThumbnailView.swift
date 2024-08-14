@@ -9,34 +9,37 @@ import SwiftUI
 
 struct ThumbnailView: View {
     let imageFolderURL: URL
-    @State private var image: NSImage?
+    let frameSize: CGSize
+    @State private var image: CGImage?
 
     var body: some View {
         VStack {
             if let image {
-                Image(nsImage: image)
+                Image(decorative: image, scale: 1.0)
                     .resizable()
-                    .cornerRadius(6)
-                    .rotationEffect(Angle(degrees: 90))
+                    .scaledToFill()
             } else {
                 ProgressView()
             }
         }
+        .frame(width: frameSize.width, height: frameSize.height)
+        .clipped()
+        .cornerRadius(6)
         .task {
-            loadThumbnail(url: imageFolderURL)
+            image = await createThumbnail(url: imageFolderURL)
         }
     }
 
-    private func loadThumbnail(url: URL) {
-        DispatchQueue.global().async {
-            // Load the embedded thumbnail.
-            let options: [CFString: Any] = [kCGImageSourceThumbnailMaxPixelSize: 100]
-            if let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil),
-               let cgImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options as CFDictionary) {
-                DispatchQueue.main.async {
-                    image = NSImage(cgImage: cgImage, size: .zero)
-                }
-            }
+    private nonisolated func createThumbnail(url: URL) async -> CGImage? {
+        let maxPixelSize = max(frameSize.width, frameSize.height) * 2
+        let options = [
+            kCGImageSourceThumbnailMaxPixelSize: maxPixelSize,
+            kCGImageSourceCreateThumbnailFromImageIfAbsent: true,
+            kCGImageSourceCreateThumbnailWithTransform: true] as CFDictionary
+        guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil),
+              let thumbnail = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options) else {
+            return nil
         }
+        return thumbnail
     }
 }

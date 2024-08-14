@@ -17,6 +17,8 @@
 		F974D56C2BE1CF0600EFACBA /* ProcessingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F974D56B2BE1CF0600EFACBA /* ProcessingView.swift */; };
 		F99368C32BE3118600DAA789 /* ModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99368C22BE3118600DAA789 /* ModelView.swift */; };
 		F9D806832BFE6EA1005A4B94 /* ImageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D806822BFE6EA1005A4B94 /* ImageHelper.swift */; };
+		F9F1BEDC2C6433340066F3D3 /* ReprocessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9F1BEDB2C6433340066F3D3 /* ReprocessView.swift */; };
+		F9F1BEDD2C6433340066F3D3 /* ReconstructionProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9F1BEDA2C6433340066F3D3 /* ReconstructionProgressView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +36,8 @@
 		F974D56B2BE1CF0600EFACBA /* ProcessingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessingView.swift; sourceTree = "<group>"; };
 		F99368C22BE3118600DAA789 /* ModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelView.swift; sourceTree = "<group>"; };
 		F9D806822BFE6EA1005A4B94 /* ImageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageHelper.swift; sourceTree = "<group>"; };
+		F9F1BEDA2C6433340066F3D3 /* ReconstructionProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconstructionProgressView.swift; sourceTree = "<group>"; };
+		F9F1BEDB2C6433340066F3D3 /* ReprocessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReprocessView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -46,7 +50,10 @@
 				AdvancedReconstructionOptions/TextureMapsView.swift,
 				AdvancedReconstructionOptions/TextureResolutionView.swift,
 				FolderOptions/FolderOptionsView.swift,
+				FolderOptions/ImageFolderSelectionView.swift,
+				FolderOptions/ImageFolderThumbnailView.swift,
 				FolderOptions/ImageFolderView.swift,
+				FolderOptions/ImageMetadataView.swift,
 				FolderOptions/ModelFolderView.swift,
 				FolderOptions/ModelNameField.swift,
 				ProcessButton/ProcessButton.swift,
@@ -79,6 +86,8 @@
 		26B095232C091B810097324A /* Processing */ = {
 			isa = PBXGroup;
 			children = (
+				F9F1BEDA2C6433340066F3D3 /* ReconstructionProgressView.swift */,
+				F9F1BEDB2C6433340066F3D3 /* ReprocessView.swift */,
 				F974D56B2BE1CF0600EFACBA /* ProcessingView.swift */,
 				F99368C22BE3118600DAA789 /* ModelView.swift */,
 				26B095462C091BC80097324A /* TopBarView.swift */,
@@ -209,6 +218,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F99368C32BE3118600DAA789 /* ModelView.swift in Sources */,
+				F9F1BEDC2C6433340066F3D3 /* ReprocessView.swift in Sources */,
+				F9F1BEDD2C6433340066F3D3 /* ReconstructionProgressView.swift in Sources */,
 				26B095492C091BEA0097324A /* BottomBarView.swift in Sources */,
 				F9D806832BFE6EA1005A4B94 /* ImageHelper.swift in Sources */,
 				26B095472C091BC80097324A /* TopBarView.swift in Sources */,

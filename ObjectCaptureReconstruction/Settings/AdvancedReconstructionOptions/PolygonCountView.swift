@@ -13,12 +13,13 @@ struct PolygonCountView: View {
 
     var body: some View {
         @Bindable var appDataModel = appDataModel
+
         LabeledContent("Max Polygon Count:") {
             TextField("", value: $appDataModel.sessionConfiguration.customDetailSpecification.maximumPolygonCount, formatter: NumberFormatter())
                 .textFieldStyle(.roundedBorder)
         }
         .onChange(of: appDataModel.sessionConfiguration.customDetailSpecification.maximumPolygonCount, initial: false) {
-            appDataModel.detailLevelOptionsUnderQualityMenu = .custom
+            appDataModel.detailLevelOptionUnderQualityMenu = .custom
         }
     }
 }

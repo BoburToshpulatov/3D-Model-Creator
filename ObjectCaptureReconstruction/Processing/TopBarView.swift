@@ -31,8 +31,8 @@ struct TopBarView: View {
                     Spacer()
                     
                     Button("Open in Finder") {
-                        DispatchQueue.global().async {
-                            NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: appDataModel.modelFolder!.path)
+                        Task {
+                            await openInFinder(url: appDataModel.modelFolder!)
                         }
                     }
                 }
@@ -54,5 +54,9 @@ struct TopBarView: View {
         }
         message.append("saved to:")
         return message
+    }
+
+    private nonisolated func openInFinder(url: URL) async {
+        NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: url.path())
     }
 }

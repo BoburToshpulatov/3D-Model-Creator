@@ -7,7 +7,6 @@ Display a USDZ file.
 
 import RealityKit
 import SwiftUI
-
 import os
 
 private let logger = Logger(subsystem: ObjectCaptureReconstructionApp.subsystem,
@@ -30,8 +29,7 @@ struct ModelView: View {
                 }
             }
             .realityViewCameraControls(.orbit)
-            .background(colorScheme == .light ? .white : .black)
-            
+            .background(colorScheme == .light ? .white : Color(red: 0.12, green: 0.12, blue: 0.12))
         } else {
             Image(systemName: "cube.transparent")
                 .resizable()

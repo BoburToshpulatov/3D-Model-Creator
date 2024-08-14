@@ -13,7 +13,7 @@ struct TextureFormatView: View {
 
     var body: some View {
         @Bindable var appDataModel = appDataModel
-        
+
         Picker("Texture Format:", selection: $appDataModel.sessionConfiguration.customDetailSpecification.textureFormat) {
             Text("PNG")
                 .tag(PhotogrammetrySession.Configuration.CustomDetailSpecification.TextureFormat.png)
@@ -22,7 +22,7 @@ struct TextureFormatView: View {
                 .tag(PhotogrammetrySession.Configuration.CustomDetailSpecification.TextureFormat.jpeg(compressionQuality: 0.8))
         }
         .onChange(of: appDataModel.sessionConfiguration.customDetailSpecification.textureFormat) {
-            appDataModel.detailLevelOptionsUnderQualityMenu = .custom
+            appDataModel.detailLevelOptionUnderQualityMenu = .custom
         }
     }
 }

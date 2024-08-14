@@ -7,7 +7,6 @@ Choose the image and model folders, the model name, and the reconstruction optio
 
 import RealityKit
 import SwiftUI
-
 import os
 
 private let logger = Logger(subsystem: ObjectCaptureReconstructionApp.subsystem,

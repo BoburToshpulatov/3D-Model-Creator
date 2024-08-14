@@ -16,7 +16,7 @@ struct QualityView: View {
         @Bindable var appDataModel = appDataModel
         
         HStack {
-            Picker("Quality:", selection: $appDataModel.detailLevelOptionsUnderQualityMenu) {
+            Picker("Quality:", selection: $appDataModel.detailLevelOptionUnderQualityMenu) {
                 Text("Preview")
                     .tag(RealityFoundation.PhotogrammetrySession.Request.Detail.preview)
                 
@@ -46,8 +46,8 @@ struct QualityView: View {
         .popover(isPresented: $showAdvancedOptions) {
             AdvancedReconstructionOptions()
         }
-        .onChange(of: appDataModel.detailLevelOptionsUnderQualityMenu) {
-            if appDataModel.detailLevelOptionsUnderQualityMenu != .custom {
+        .onChange(of: appDataModel.detailLevelOptionUnderQualityMenu) {
+            if appDataModel.detailLevelOptionUnderQualityMenu != .custom {
                 appDataModel.sessionConfiguration.customDetailSpecification = PhotogrammetrySession.Configuration.CustomDetailSpecification()
             }
         }

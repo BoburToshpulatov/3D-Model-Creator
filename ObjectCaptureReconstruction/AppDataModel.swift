@@ -7,14 +7,13 @@ Data model for maintaining the app state.
 
 import Foundation
 import RealityKit
-
 import os
 
 private let logger = Logger(subsystem: ObjectCaptureReconstructionApp.subsystem,
                             category: "AppDataModel")
 
 @MainActor @Observable class AppDataModel {
-    enum State {
+    enum State: Equatable {
         case ready
         case reconstructing
         case viewing
@@ -48,10 +47,19 @@ private let logger = Logger(subsystem: ObjectCaptureReconstructionApp.subsystem,
     var sessionConfiguration: PhotogrammetrySession.Configuration = PhotogrammetrySession.Configuration()
 
     // The detail levels that show up under the Quality menu in SettingsView.
-    var detailLevelOptionsUnderQualityMenu = PhotogrammetrySession.Request.Detail.medium
+    var detailLevelOptionUnderQualityMenu = PhotogrammetrySession.Request.Detail.medium
+
+    struct DetailLevelOptionsUnderAdvancedMenu {
+        var isSelected = false
+        var preview = false
+        var reduced = false
+        var medium = false
+        var full = false
+        var raw = false
+    }
 
     // The detail levels that show up under the Advanced Reconstruction Options in SettingsView.
-    var detailLevelOptionsUnderAdvancedMenu: Set<PhotogrammetrySession.Request.Detail> = []
+    var detailLevelOptionsUnderAdvancedMenu = DetailLevelOptionsUnderAdvancedMenu()
 
     // The alert message shown in the pop up when the app goes into the error state.
     var alertMessage: String = ""
@@ -65,37 +73,30 @@ private let logger = Logger(subsystem: ObjectCaptureReconstructionApp.subsystem,
     // Creates a PhotogrammetrySession to generate 3D models for all detail levels requested by the person for the images in the imageFolder.
     // The models are saved in the modelFolder. The model name consists of the modelName and its detail level.
     func startReconstruction() async {
-        // Go to the error state if the required fileds aren't filled.
+        logger.log("Starting the reconstruction...")
+        // Go to the error state if the required fields aren't filled.
         guard let imageFolder = imageFolder else {
             alertMessage = "Image folder is not selected"
             state = .error
             logger.info("\(self.alertMessage)")
             return
         }
-        guard let modelName = modelName else {
+        guard modelName != nil else {
             alertMessage = "Model name is not selected"
             state = .error
             logger.info("\(self.alertMessage)")
             return
         }
-        guard let modelFolder = modelFolder else {
+        guard modelFolder != nil else {
             alertMessage = "Model folder is not selected"
             state = .error
             logger.info("\(self.alertMessage)")
             return
         }
 
-        // Get a list of all detail levels selected by the person through both the Quality menu and under the Advanced Reconstruction options.
-        var detailLevelList = detailLevelOptionsUnderAdvancedMenu
-        detailLevelList.insert(detailLevelOptionsUnderQualityMenu)
-        
-        // Create a request for each detail level.
-        var requests: [PhotogrammetrySession.Request] = []
-        for detailLevel in detailLevelList {
-            let modelFileURL = modelFolder.appending(path: (modelName) + "-\(detailLevel)" + ".usdz")
-            requests.append(PhotogrammetrySession.Request.modelFile(url: modelFileURL, detail: detailLevel))
-        }
-        numRequestedModels = detailLevelList.count
+        let requests = createReconstructionRequests()
+        guard !requests.isEmpty else { return }
+        numRequestedModels = requests.count
 
         // Update the app's state so that ProcessingView is visible.
         state = .reconstructing
@@ -117,10 +118,30 @@ private let logger = Logger(subsystem: ObjectCaptureReconstructionApp.subsystem,
     }
 
     // Create a PhotogrammetrySession asynchronously.
-    nonisolated private func createSession(imageFolder: URL,
+    private nonisolated func createSession(imageFolder: URL,
                                            configuration: PhotogrammetrySession.Configuration) async throws -> PhotogrammetrySession {
         logger.log("Creating PhotogrammetrySession with \(String(describing: configuration))")
         return try PhotogrammetrySession(input: imageFolder, configuration: configuration)
+    }
+
+    private func createReconstructionRequests() -> [PhotogrammetrySession.Request] {
+        // Get a list of all detail levels selected by the person through both the Quality menu and under the Advanced Reconstruction options.
+        var detailLevelList: Set<PhotogrammetrySession.Request.Detail> = [detailLevelOptionUnderQualityMenu]
+        if detailLevelOptionsUnderAdvancedMenu.isSelected {
+            if detailLevelOptionsUnderAdvancedMenu.preview { detailLevelList.insert(.preview) }
+            if detailLevelOptionsUnderAdvancedMenu.reduced { detailLevelList.insert(.reduced) }
+            if detailLevelOptionsUnderAdvancedMenu.medium { detailLevelList.insert(.medium) }
+            if detailLevelOptionsUnderAdvancedMenu.full { detailLevelList.insert(.full) }
+            if detailLevelOptionsUnderAdvancedMenu.raw { detailLevelList.insert(.raw) }
+        }
+
+        // Create a request for each detail level.
+        var requests: [PhotogrammetrySession.Request] = []
+        for detailLevel in detailLevelList {
+            let modelFileURL = modelFolder!.appending(path: (modelName!) + "-\(detailLevel)" + ".usdz")
+            requests.append(PhotogrammetrySession.Request.modelFile(url: modelFileURL, detail: detailLevel))
+        }
+        return requests
     }
 }
 

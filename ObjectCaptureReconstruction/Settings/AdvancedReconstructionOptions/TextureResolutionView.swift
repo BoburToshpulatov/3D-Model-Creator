@@ -13,6 +13,7 @@ struct TextureResolutionView: View {
 
     var body: some View {
         @Bindable var appDataModel = appDataModel
+ 
         Picker("Texture Resolution:", selection: $appDataModel.sessionConfiguration.customDetailSpecification.maximumTextureDimension) {
             Text("1K")
                 .tag(PhotogrammetrySession.Configuration.CustomDetailSpecification.TextureDimension.oneK)
@@ -30,7 +31,7 @@ struct TextureResolutionView: View {
                 .tag(PhotogrammetrySession.Configuration.CustomDetailSpecification.TextureDimension.sixteenK)
         }
         .onChange(of: appDataModel.sessionConfiguration.customDetailSpecification.maximumTextureDimension, initial: false) {
-            appDataModel.detailLevelOptionsUnderQualityMenu = .custom
+            appDataModel.detailLevelOptionUnderQualityMenu = .custom
         }
     }
 }
